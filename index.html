@@ -1,310 +1,904 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>PRICR — No-code insurance rating</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rateable — The rating engine brokers control</title>
+    <meta name="description" content="Rateable is an insurance quote rating engine you fully control. Model products, build rating logic with visual blocks, publish versioned rates and quote through a fast authenticated API." />
+    <meta name="theme-color" content="#003049" />
+    <link rel="canonical" href="https://rateable.uk/" />
 
-        <link rel="icon" href="assets/favicon.png"/>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rateable" />
+    <meta property="og:title" content="Rateable — The rating engine brokers control" />
+    <meta property="og:description" content="Model products, build rating logic with visual blocks, publish versioned rates and quote through a fast authenticated API. Your rates, your logic." />
+    <meta property="og:url" content="https://rateable.uk/" />
+    <meta property="og:image" content="https://rateable.uk/assets/img/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_GB" />
 
-        <!-- Josefin Sans -->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap"
-            rel="stylesheet">
-        <link rel="stylesheet" href="assets/style.css">
-    </head>
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rateable — The rating engine brokers control" />
+    <meta name="twitter:description" content="Model products, build rating logic with visual blocks, publish versioned rates and quote through a fast authenticated API." />
+    <meta name="twitter:image" content="https://rateable.uk/assets/img/og-image.jpg" />
 
-    <body>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
 
-        <canvas id="confetti"></canvas>
+    <!-- Structured data. The FAQ answers below mirror the visible copy on this
+         page exactly, and the offer matches the Standard plan in #pricing. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Rateable",
+      "url": "https://rateable.uk/",
+      "logo": "https://rateable.uk/assets/img/logo.jpg",
+      "description": "Insurance quote rating engine you fully control — versioned rating logic and a fast authenticated quoting API."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Rateable",
+      "url": "https://rateable.uk/",
+      "inLanguage": "en-GB",
+      "publisher": { "@type": "Organization", "name": "Rateable" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Rateable",
+      "url": "https://rateable.uk/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Insurance quote rating engine with visual rating blocks, versioned effective-dated rates and an authenticated quoting API.",
+      "offers": {
+        "@type": "Offer",
+        "price": "249",
+        "priceCurrency": "GBP",
+        "url": "https://rateable.uk/#pricing",
+        "description": "Standard plan, billed monthly. Includes 1 product, 3 users and 50,000 quotes, with priced overages beyond that."
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much does Rateable cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Every organisation starts on Standard at £249 per month, which includes 1 product, 3 users and 50,000 quotes. Beyond that, £95 per month per extra product, £40 per month per block of five extra users, and a progressive per-quote rate for extra volume. Past 14 products, 29 users or 2M quotes we scope a Custom plan." }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is our data stored?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Quote payloads are not persisted. The engine stores aggregates only, so no personal data sits in our logs. Infrastructure, data residency and DPA details are shared on request." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can we import our existing rate tables?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not yet. It is on the roadmap. In your walkthrough we will scope an import for your panel and give you an honest timeline." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can we leave and take our logic with us?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Always. You own your products and rate logic. Export tooling is on the roadmap — tell us you need it and we will prioritise it for your account." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do we need developers?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Rating logic is built with visual blocks. The API is there for your integrators when you are ready to quote from your own portal." }
+        }
+      ]
+    }
+    </script>
 
-        <header>
-            <img src="assets/dark_logo.png" class="logo" alt="PRICR"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href="assets/img/shots/org-dashboard.jpg" fetchpriority="high" />
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
 
-            <div class="hero">
-                <div>
-                    <h1>
-                        Insurance pricing<br/>
-                        <span>without dev bottlenecks</span>
-                    </h1>
-                    <p class="lead">
-                        PRICR lets pricing and underwriting teams build, test and deploy rating logic
-                        without release cycles, dev queues or rework.
+    <!-- Gate scroll-reveal on JS so content stays visible if scripting is off.
+         This class is added before first paint (no flash), which also means a
+         main.js failure would otherwise leave the page blank — so if the reveal
+         never initialises, the safety net below removes the gate again. -->
+    <script>
+        (function () {
+            var root = document.documentElement;
+            root.classList.add('js');
+            window.addEventListener('load', function () {
+                window.setTimeout(function () {
+                    if (!window.rateableRevealReady) root.classList.remove('js');
+                }, 1200);
+            });
+        })();
+    </script>
+</head>
+<body id="top">
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- ============================================================
+         NAV
+         ============================================================ -->
+    <header class="site-nav" id="site-nav">
+        <div class="container site-nav__inner">
+            <a class="site-nav__brand" href="#top">
+                <img src="assets/img/logo.jpg" alt="Rateable" width="320" height="49" loading="eager" decoding="async" />
+            </a>
+
+            <nav aria-label="Primary">
+                <ul class="site-nav__links">
+                    <li><a href="#how-it-works">How it works</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#security">Security</a></li>
+                    <li><a href="#integration">Integrations</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+
+            <div class="site-nav__actions">
+                <a class="btn btn--primary" href="#contact">Get a walkthrough</a>
+                <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+
+        <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile" hidden>
+            <a href="#how-it-works">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#security">Security</a>
+            <a href="#integration">Integrations</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
+            <a class="btn btn--primary btn--block" href="#contact">Get a walkthrough</a>
+        </nav>
+    </header>
+
+    <main id="main">
+
+        <!-- ============================================================
+             HERO
+             ============================================================ -->
+        <section class="hero">
+            <div class="container hero__inner">
+                <div class="hero__copy">
+                    <p class="eyebrow">Insurance quoting, rebuilt to be yours</p>
+                    <h1 class="hero__title">The rating engine <span class="accent">brokers control</span>.</h1>
+                    <p class="hero__lede">
+                        Model products, build rating logic out of simple visual blocks, publish a version — and
+                        it is live the same day. An authenticated API puts your panel in front of customers at a
+                        <strong>target of sub-100ms per quote</strong>. No vendor waiting list, no black-box
+                        engine. Your rates, your logic.
+                    </p>
+
+                    <div class="hero__cta">
+                        <a class="btn btn--primary btn--lg" href="#contact">Get a 15-minute walkthrough</a>
+                        <a class="btn btn--ghost btn--lg" href="#how-it-works">See how it works</a>
+                    </div>
+
+                    <p class="hero__note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" />
+                        </svg>
+                        <span>A product demo, not a sales deck. We set up a pre-seeded demo org for you. No credit card, no install.</span>
+                    </p>
+
+                    <ul class="hero__proof">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span>15 composable rating blocks — no code required</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span>Versioned, effective-dated rates with rollback</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span>API-first, and built for your integrators</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="hero__media">
+                    <figure class="shot-frame shot-frame--hero">
+                        <div class="shot-frame__bar" aria-hidden="true">
+                            <span class="shot-frame__label">Admin — org dashboard</span>
+                        </div>
+                        <img src="assets/img/shots/org-dashboard.jpg" alt="Rateable admin dashboard for a demo broker, showing quote totals, plan usage and product cards." width="1280" height="800" loading="eager" fetchpriority="high" decoding="async" />
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             PROOF STRIP — verifiable product facts
+             ============================================================ -->
+        <section class="proof" aria-label="Platform facts">
+            <div class="container">
+                <p class="proof__label">What the engine actually does</p>
+                <ul class="proof__grid">
+                    <li>
+                        <span class="proof__value">15</span>
+                        <span class="proof__label-text">composable rating blocks, composed visually</span>
+                    </li>
+                    <li>
+                        <span class="proof__value">&lt;100<span style="font-size:.7em">ms</span></span>
+                        <span class="proof__label-text">target latency on every quote</span>
+                    </li>
+                    <li>
+                        <span class="proof__value">SHA-256</span>
+                        <span class="proof__label-text">API keys hashed at rest</span>
+                    </li>
+                    <li>
+                        <span class="proof__value">Zero</span>
+                        <span class="proof__label-text">quote payloads persisted</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             PROBLEM
+             ============================================================ -->
+        <section class="section section--cream" id="problem">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">The problem</p>
+                    <h2>Rate-on-a-spreadsheet doesn't cut it anymore.</h2>
+                    <p class="section__lede">
+                        Most brokers quote through tools they don't own: rates frozen in a spreadsheet, logic
+                        hard-coded by a vendor, or manual emails to underwriters. Every rate change becomes a
+                        project, and every product stays a black box.
                     </p>
                 </div>
 
-                <div class="card">
-                    <h2>Register interest</h2>
-                    <p>Early access for brokers, MGAs and insurers.</p>
-
-                    <form id="interestForm">
-                        <input id="nameInput" type="text" placeholder="Your name" required="required"/>
-
-                        <input
-                            type="email"
-                            id="emailInput"
-                            placeholder="Work email address"
-                            required="required"/>
-
-                        <input type="text" id="titleInput" placeholder="Job title / Role (optional)">
-
-                        <input type="text" id="orgInput" placeholder="Organisation name  (optional)"/>
-
-                        <select id="orgSizeInput">
-                            <option value="">Company size (optional)</option>
-                            <option value="1-10">1-10</option>
-                            <option value="11-50">11-50</option>
-                            <option value="51-200">51-200</option>
-                            <option value="201-1000">201-1,000</option>
-                            <option value="1000+">1,000+</option>
-                        </select>
-
-                        <!-- hidden tracking fields -->
-                        <input type="hidden" id="utmInput" name="utm_source" value="">
-                        <input type="hidden" id="referrerInput" name="referrer" value="">
-
-                        <button type="submit">Request early access</button>
-                        <div class="error" id="error">Please enter a valid email</div>
-                    </form>
-
-                    <div class="success" id="success">
-                        <h3>You’re on the list 🎉</h3>
-                        <p>We’ll be in touch shortly.</p>
-                    </div>
+                <div class="cards" data-reveal>
+                    <article class="card">
+                        <span class="card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                                <path d="M22 17 13.5 8.5 8.5 13.5 2 7" /><path d="M16 17h6v-6" />
+                            </svg>
+                        </span>
+                        <h3>Rates you can't change</h3>
+                        <p>Weeks of waiting for a vendor to update a rate book means lost quotes, eroded margins and stale prices on the street.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                                <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M9 21V9" />
+                            </svg>
+                        </span>
+                        <h3>Black-box rating logic</h3>
+                        <p>If you can't see how a price is built, you can't audit it, challenge it, or explain it to a regulator or a client.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                                <path d="M9 2v6M15 2v6" /><path d="M6 8h12v3a6 6 0 0 1-12 0V8Z" /><path d="M12 17v5" />
+                            </svg>
+                        </span>
+                        <h3>No integration story</h3>
+                        <p>Your panel sits where your customers can't reach it. Re-keying, faxes and email quoting don't scale past a certain size.</p>
+                    </article>
                 </div>
             </div>
-        </header>
+        </section>
 
-        <section>
-            <div class="value-grid-section">
-                <h2>Why choose PRICR?</h2>
-                <p class="section-lead">
-                    Everything pricing and underwriting teams need — without the operational drag.
+        <!-- ============================================================
+             HOW IT WORKS
+             ============================================================ -->
+        <section class="section section--canvas" id="how-it-works">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">How it works</p>
+                    <h2>From blank page to live quote in an afternoon.</h2>
+                    <p class="section__lede">Rateable replaces the spreadsheet with a structured pipeline you control end to end.</p>
+                </div>
+
+                <ol class="steps" data-reveal>
+                    <li class="step">
+                        <span class="step__num" aria-hidden="true">01</span>
+                        <h3>Define your product</h3>
+                        <p>Create the product, its quote payload fields and validation — exactly the data your panel needs, with descriptions written for integrators.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step__num" aria-hidden="true">02</span>
+                        <h3>Build rating logic visually</h3>
+                        <p>Compose calculation blocks — add, multiply, lookup, if, round, validation, refer — into a waterfall anyone on the team can follow.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step__num" aria-hidden="true">03</span>
+                        <h3>Publish, version and integrate</h3>
+                        <p>Publish a versioned rate with an effective date, hand out scoped API keys, and quote through a fast authenticated endpoint.</p>
+                    </li>
+                </ol>
+
+                <figure class="shot-frame shot-frame--wide" data-reveal>
+                    <div class="shot-frame__bar" aria-hidden="true">
+                        <span class="shot-frame__label">Admin — rating version 1.0</span>
+                    </div>
+                    <img src="assets/img/shots/rating-waterfall.jpg" alt="A published Rateable rating version showing the start of its block waterfall, with validation, comparison and premium-building steps." width="1800" height="1012" loading="lazy" decoding="async" />
+                </figure>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             FEATURES
+             ============================================================ -->
+        <section class="section section--navy" id="features">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">Features</p>
+                    <h2>Everything you need to own your rating.</h2>
+                    <p class="section__lede">
+                        Eight capabilities, built around one idea: the person who sets the price should be the
+                        person who can change it, see how it was built, and prove it later.
+                    </p>
+                </div>
+
+                <div class="features" data-reveal>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 9 5-9 5-9-5 9-5Z" /><path d="m3 12 9 5 9-5" /><path d="m3 17 9 5 9-5" /></svg>
+                            Visual rating blocks
+                        </h3>
+                        <p>Fifteen composable blocks — <code>Add, Subtract, Multiply, Divide, Lookup, If, And, Or, Not, Equal, MoreThan, LessThan, Round, Validation, Refer</code> — ordered into an auditable waterfall. No code required.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 0 1 15-6.7L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15 6.7L3 16" /><path d="M3 21v-5h5" /></svg>
+                            Versions &amp; effective dating
+                        </h3>
+                        <p>Every rate change is a version. Draft, publish, forward-date, and take a rate offline when a product leaves the market. Selection is automatic by quote date.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18M3 15h18M9 10v10" /></svg>
+                            Live rate tables
+                        </h3>
+                        <p>Upload lookup tables, then edit rows inline as territory codes, fees and risk factors change — without touching the logic that reads them.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h18l-7 8v7l-4 2v-9L3 4Z" /></svg>
+                            Eligibility &amp; referrals
+                        </h3>
+                        <p>Validation blocks reject what doesn't fit; a <code>Refer</code> block hands borderline risks to an underwriter with a recorded reason — a standard insurance outcome, built in.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m4 17 6-5-6-5" /><path d="M12 19h8" /></svg>
+                            A fast, authenticated API
+                        </h3>
+                        <p>Quote via <code>POST /quotes</code> with an API key. The engine targets a sub-100ms average so quotes feel instant in your customer's journey.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="7.5" cy="15.5" r="3.5" /><path d="m10 13 8.5-8.5M15 8l2.5 2.5M17.5 5.5 20 8" /></svg>
+                            Compliance-safe keys
+                        </h3>
+                        <p>API keys are hashed at rest with SHA-256, scoped to specific providers, revocable, and can carry an expiry — which is what makes 90-day rotation practical.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21h18" /><path d="M6 21V11M11 21V5M16 21v-6M21 21v-9" /></svg>
+                            Quote-run visibility
+                        </h3>
+                        <p>Quotes by day, success versus engine errors, and referral counts per product and provider. No raw payloads stored, so no personal data in your logs.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0" /><path d="M16 5.2a3.5 3.5 0 0 1 0 5.6" /><path d="M18 20a6.4 6.4 0 0 0-2.4-4.9" /></svg>
+                            Teams &amp; invites
+                        </h3>
+                        <p>Invite team members into your organisation, hand out roles, and let everyone work against the same versioned truth instead of emailing spreadsheets around.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECURITY
+             ============================================================ -->
+        <section class="section section--canvas" id="security">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">Security &amp; compliance</p>
+                    <h2>The questions your procurement team will ask.</h2>
+                    <p class="section__lede">
+                        A rating engine holds your rate logic and sits in your customer journey, so these come up
+                        early. Here is what is true today.
+                    </p>
+                </div>
+
+                <div class="security" data-reveal>
+                    <div class="security__item">
+                        <span class="security__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                        </span>
+                        <h3>Aggregates only</h3>
+                        <p>Quote payloads are not persisted. The engine keeps aggregates, so personal data never lands in your logs or ours.</p>
+                    </div>
+                    <div class="security__item">
+                        <span class="security__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="7.5" cy="15.5" r="3.5" /><path d="m10 13 8.5-8.5M15 8l2.5 2.5M17.5 5.5 20 8" /></svg>
+                        </span>
+                        <h3>Scoped, revocable keys</h3>
+                        <p>Keys are hashed at rest, scoped per provider, and can be revoked or expired without touching your other integrations.</p>
+                    </div>
+                    <div class="security__item">
+                        <span class="security__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 12a9 9 0 0 1 15-6.7L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15 6.7L3 16" /><path d="M3 21v-5h5" /></svg>
+                        </span>
+                        <h3>Versioned and effective-dated</h3>
+                        <p>Every published rate carries a version number and an effective date, so a quote from six months ago can be traced to the logic that priced it.</p>
+                    </div>
+                    <div class="security__item">
+                        <span class="security__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 4h18l-7 8v7l-4 2v-9L3 4Z" /></svg>
+                        </span>
+                        <h3>Recorded referral reasons</h3>
+                        <p>When a risk is referred, the reason travels with it — so the decision is reviewable, not just the outcome.</p>
+                    </div>
+                </div>
+
+                <p class="security__note">
+                    <strong>Being straight with you:</strong> we are not yet independently certified, and we would
+                    rather say so here than badge it. Infrastructure detail, data residency, the DPA and our
+                    certification roadmap all get covered properly in the walkthrough.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             INTEGRATION
+             ============================================================ -->
+        <section class="section section--cream" id="integration">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">Integration</p>
+                    <h2>One endpoint. Your integrators will be fine.</h2>
+                    <p class="section__lede">
+                        Quoting is a single authenticated call. Send a payload, get back a rated panel with the
+                        version number that produced it.
+                    </p>
+                </div>
+
+                <div class="integration" data-reveal>
+                    <ul class="spec-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <div>
+                                <strong>One endpoint</strong>
+                                <span><code>POST /quotes</code>. No SDK required — it is a JSON request and a JSON response.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <div>
+                                <strong>Header auth</strong>
+                                <span>Keys travel in <code>X-Api-Key</code>, scoped to a provider so you can separate environments and partners.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <div>
+                                <strong>Automatic rate selection</strong>
+                                <span>Send <code>quoteStartDate</code>; the engine picks the published version that was effective on that date.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <div>
+                                <strong>Every quote is traceable</strong>
+                                <span>Each returned quote carries its <code>versionNumber</code>, so a priced panel ties back to published logic.</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="code-grid">
+                        <div class="code">
+                            <div class="code__bar">
+                                <p class="code__label">Request</p>
+                                <span class="code__lang">curl</span>
+                                <button class="code__copy" type="button" data-copy>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+                                    <span>Copy</span>
+                                </button>
+                            </div>
+                            <pre tabindex="0" role="group" aria-label="Request example, scrollable"><code><span class="code__comment"># Rating a quote: one request, one rated panel back</span>
+curl -X POST <span class="code__req">https://YOUR-API-HOST/quotes</span> \
+  -H <span class="code__key">"X-Api-Key: rt-demo-..."</span> \
+  -H <span class="code__key">"Content-Type: application/json"</span> \
+  -d <span class="code__key">'{
+    "payload": {
+      "trade_type": "Electrician",
+      "annual_turnover_gbp": 185000,
+      "years_trading": 6,
+      "claims_last_5yrs": 0
+    },
+    "quoteStartDate": "2026-09-10T09:00:00Z"
+  }'</span></code></pre>
+                        </div>
+
+                        <div class="code">
+                            <div class="code__bar">
+                                <p class="code__label">Response</p>
+                                <span class="code__lang">200 OK</span>
+                                <button class="code__copy" type="button" data-copy>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+                                    <span>Copy</span>
+                                </button>
+                            </div>
+                            <pre tabindex="0" role="group" aria-label="Response example, scrollable"><code>{
+  <span class="code__key">"quotes"</span>: [{
+    <span class="code__key">"providerName"</span>: <span class="code__req">"Severn MGA"</span>,
+    <span class="code__key">"available"</span>: <span class="code__bool">true</span>,
+    <span class="code__key">"success"</span>: <span class="code__bool">true</span>,
+    <span class="code__key">"outputs"</span>: {
+      <span class="code__key">"final_premium_gbp"</span>: <span class="code__num">216.00</span>,
+      <span class="code__key">"liability_limit_gbp"</span>: <span class="code__num">1000000</span>,
+      <span class="code__key">"excess_gbp"</span>: <span class="code__num">250</span>
+    },
+    <span class="code__key">"versionNumber"</span>: <span class="code__req">"1.0"</span>
+  }]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-flow" data-reveal>
+                    <span>Key issued in the admin app</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                    <b>X-Api-Key</b>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                    <span>Hashed at rest, scoped per provider</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                    <span><code>POST /quotes</code></span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                    <span>Rated panel + <b>versionNumber</b></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             DEMO
+             ============================================================ -->
+        <section class="section section--canvas" id="demo">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">See it run</p>
+                    <h2>From rate change to live quote in minutes.</h2>
+                    <p class="section__lede">
+                        Update a rate, publish a new version, and your panel quotes at the new numbers the same
+                        day — no vendor waiting list.
+                    </p>
+                </div>
+
+                <ol class="demo-steps" data-reveal>
+                    <li><strong>Change the rate</strong>Tweak a block or a lookup table.</li>
+                    <li><strong>Publish a version</strong>Effective now, or forward-dated.</li>
+                    <li><strong>It's live</strong>Your panel quotes at the new numbers.</li>
+                </ol>
+
+                <p class="demo__aside" data-reveal>
+                    <strong>For your integrators:</strong> the endpoint above is the whole surface. Using the demo
+                    product <code>Tradesman Liability (Demo)</code>, a rated request comes back in well under a
+                    second — sub-100ms is the target for the engine itself.
                 </p>
 
-                <div class="value-grid">
-                    <div class="value-card">
-                        <div class="value-image navy">
-                            🏗️
+                <div class="shot-grid" data-reveal>
+                    <figure class="shot-frame shot-frame--panel">
+                        <div class="shot-frame__bar" aria-hidden="true">
+                            <span class="shot-frame__label">Admin — lookup tables</span>
                         </div>
-                        <h3>Build pricing without developers</h3>
-                        <p>
-                            Pricing and underwriting teams define rules, factors and formulas visually. No
-                            dev queues, no release cycles, no bottlenecks.
-                        </p>
+                        <img src="assets/img/shots/lookup-tables.jpg" alt="Lookup tables in the Rateable admin app, with trade risk factors editable inline." width="1600" height="1000" loading="lazy" decoding="async" />
+                    </figure>
+                    <figure class="shot-frame shot-frame--panel">
+                        <div class="shot-frame__bar" aria-hidden="true">
+                            <span class="shot-frame__label">Admin — integrators</span>
+                        </div>
+                        <img src="assets/img/shots/integrators.jpg" alt="Integrators in the Rateable admin app, listing scoped API keys with status and expiry." width="1600" height="1000" loading="lazy" decoding="async" />
+                    </figure>
+                </div>
+
+                <figure class="shot-frame shot-frame--panel shot-frame--video" data-reveal>
+                    <div class="shot-frame__bar">
+                        <span class="shot-frame__label">Admin — dry run</span>
+                    </div>
+                    <video width="1280" height="800" muted loop playsinline preload="none"
+                           poster="assets/video/dry-run-poster.jpg" data-autoplay aria-hidden="true">
+                        <source src="assets/video/dry-run.webm" type="video/webm" />
+                        <source src="assets/video/dry-run.mp4" type="video/mp4" />
+                    </video>
+                    <figcaption class="shot-frame__caption">
+                        <span>Dry run: the sample payload runs down version 1.0 and returns the outcome, outputs and block trace.</span>
+                        <button class="shot-frame__toggle" type="button" data-video-toggle aria-label="Play animation" hidden>Play</button>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             FAQ
+             ============================================================ -->
+        <section class="section section--white" id="faq">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">Good questions</p>
+                    <h2>Questions brokers ask us first.</h2>
+                </div>
+
+                <div class="faq" data-reveal>
+                    <details class="faq__item">
+                        <summary>
+                            How much does Rateable cost?
+                            <span class="faq__sign" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+                            </span>
+                        </summary>
+                        <div class="faq__answer">
+                            <p>Every organisation starts on <strong>Standard at £249 per month</strong> — 1 product, 3 users and 50,000 quotes included. Beyond that it's £95 per month per extra product, £40 per month per block of five extra users, and a progressive per-quote rate that gets cheaper as volume grows. Past 14 products, 29 users or 2M quotes we scope a Custom plan. The calculator above shows your bill at any size.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq__item">
+                        <summary>
+                            Where is our data stored?
+                            <span class="faq__sign" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+                            </span>
+                        </summary>
+                        <div class="faq__answer">
+                            <p>Quote payloads aren't persisted — the engine stores aggregates only, so no personal data sits in our logs. For infrastructure, data residency and the DPA, ask in your walkthrough and we'll share the details. We've also set out what we do and don't have covered in <a href="#security">Security &amp; compliance</a>.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq__item">
+                        <summary>
+                            Can we import our existing rate tables?
+                            <span class="faq__sign" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+                            </span>
+                        </summary>
+                        <div class="faq__answer">
+                            <p>Not yet — it's something we're working toward. In your walkthrough we'll scope an import for your panel and give you an honest timeline rather than a vague one.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq__item">
+                        <summary>
+                            Can we leave and take our logic with us?
+                            <span class="faq__sign" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+                            </span>
+                        </summary>
+                        <div class="faq__answer">
+                            <p>Always. You own your products and rate logic. Export tooling is on the roadmap — tell us you need it and we'll prioritise it for your account.</p>
+                        </div>
+                    </details>
+
+                    <details class="faq__item">
+                        <summary>
+                            Do we need developers?
+                            <span class="faq__sign" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+                            </span>
+                        </summary>
+                        <div class="faq__answer">
+                            <p>No. Rating logic is built with visual blocks. The API is there for your integrators when you're ready to quote from your own portal.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             PRICING
+             ============================================================ -->
+        <section class="section section--cream" id="pricing">
+            <div class="container">
+                <div class="section__head">
+                    <p class="eyebrow">Pricing</p>
+                    <h2>Pricing you can repeat to your stakeholders.</h2>
+                    <p class="section__lede">
+                        One plan, then three simple scales. No sales call needed to work out what it costs, and
+                        no quote required to get started.
+                    </p>
+                </div>
+
+                <div class="price-anchor" data-reveal>
+                    <p class="price-anchor__amount">£249<span> / month</span></p>
+                    <div>
+                        <p class="price-anchor__meta"><strong>Standard</strong> — everything below is included from day one.</p>
+                        <ul class="included">
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>1 product</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>3 users</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>50,000 quotes / month</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>Unlimited rate versions</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>All 15 rating blocks</li>
+                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>API keys and quoting API</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="calc" id="calc" data-reveal>
+                    <div class="calc__panel">
+                        <h3 class="calc__title">Estimate your monthly bill</h3>
+
+                        <div class="calc__field">
+                            <div class="calc__field-head">
+                                <label for="calc-products">Products</label>
+                                <output class="calc__val" id="calc-products-val" for="calc-products">1</output>
+                            </div>
+                            <input type="range" id="calc-products" min="1" max="14" value="1" step="1" />
+                            <div class="calc__scale" aria-hidden="true"><span>1</span><span>14</span></div>
+                        </div>
+
+                        <div class="calc__field">
+                            <div class="calc__field-head">
+                                <label for="calc-users">Users</label>
+                                <output class="calc__val" id="calc-users-val" for="calc-users">3</output>
+                            </div>
+                            <input type="range" id="calc-users" min="3" max="29" value="3" step="1" />
+                            <div class="calc__scale" aria-hidden="true"><span>3</span><span>29</span></div>
+                        </div>
+
+                        <div class="calc__field">
+                            <div class="calc__field-head">
+                                <label for="calc-quotes">Quotes / month</label>
+                                <output class="calc__val" id="calc-quotes-val" for="calc-quotes">50,000</output>
+                            </div>
+                            <input type="range" id="calc-quotes" min="50000" max="2000000" value="50000" step="10000" />
+                            <div class="calc__scale" aria-hidden="true"><span>50k</span><span>2M</span></div>
+                        </div>
+
+                        <p class="calc__hint" id="calc-hint" hidden></p>
                     </div>
 
-                    <div class="value-card">
-                        <div class="value-image orange">
-                            🕰️
-                        </div>
-                        <h3>Audit and Versioning</h3>
-                        <p>
-                            Versioning, approvals and audit trails are built in by default — giving you
-                            speed without sacrificing control.
+                    <div class="calc__panel calc__summary">
+                        <p class="calc__label" id="calc-total-label">Estimated monthly bill</p>
+                        <p class="calc__total" role="status" aria-live="polite" aria-atomic="true">
+                            <b id="calc-total-value">£249</b><span>per month</span>
                         </p>
-                    </div>
 
-                    <div class="value-card">
-                        <div class="value-image red">
-                            🧪
-                        </div>
-                        <h3>Test, compare and deploy safely</h3>
-                        <p>
-                            Run scenarios, compare versions and deploy confidently without risking live
-                            pricing or compliance.
-                        </p>
-                    </div>
+                        <table class="calc__rows">
+                            <caption class="visually-hidden">Breakdown of the estimated monthly bill</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Line</th>
+                                    <th scope="col" class="calc__rows-amount">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Standard base</td>
+                                    <td>£249</td>
+                                </tr>
+                                <tr class="calc__row-addon" data-row="products" hidden>
+                                    <td>Extra products, £95 each</td>
+                                    <td id="calc-product-cost">£0</td>
+                                </tr>
+                                <tr class="calc__row-addon" data-row="users" hidden>
+                                    <td>User blocks, £40 per block of five</td>
+                                    <td id="calc-user-cost">£0</td>
+                                </tr>
+                                <tr class="calc__row-addon" data-row="quotes" hidden>
+                                    <td>Quotes beyond 50,000, progressive</td>
+                                    <td id="calc-quote-cost">£0</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <div class="value-card">
-                        <div class="value-image orange">
-                            📈
-                        </div>
-                        <h3>Data and Reporting</h3>
-                        <p>
-                            Built-in analytics and reporting tools to track performance, identify trends,
-                            and make data-driven decisions to optimize your pricing strategies.
-                        </p>
-                    </div>
+                        <p class="calc__tier" id="calc-tier" hidden></p>
 
-                    <div class="value-card">
-                        <div class="value-image red">
-                            🌍
-                        </div>
-                        <h3>Global Reach</h3>
-                        <p>
-                            PRICR is built for global markets and supports multiple currencies, regions and
-                            compliance standards.
-                        </p>
-                    </div>
-
-                    <div class="value-card">
-                        <div class="value-image navy">
-                            💸
-                        </div>
-                        <h3>Cost savings</h3>
-                        <p>
-                            PRICR reduces operational costs by automating pricing workflows and eliminating
-                            the need for teams of manual development work.
-                        </p>
+                        <a class="btn btn--accent btn--block" href="#contact">Get a walkthrough</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section>
-            <div class="faq">
-                <h2>FAQs</h2>
-
-                <details>
-                    <summary>Is PRICR replacing our existing systems?</summary>
-                    <p>No. PRICR integrates with existing quote and policy platforms.</p>
-                </details>
-
-                <details>
-                    <summary>Do pricing teams really not need developers?</summary>
-                    <p>
-                        Developers are still involved for integrations, but day-to-day pricing changes
-                        are owned by pricing teams.
+        <!-- ============================================================
+             CONTACT
+             ============================================================ -->
+        <section class="section section--navy" id="contact">
+            <div class="container contact-grid">
+                <div>
+                    <p class="eyebrow">Get started</p>
+                    <h2>Own your rating engine.</h2>
+                    <p class="section__lede">
+                        Want a hands-on look at the block builder and the quoting API? Connect and we'll set up a
+                        pre-seeded demo org for you.
                     </p>
-                </details>
 
-                <details>
-                    <summary>Is PRICR suitable for regulated environments?</summary>
-                    <p>
-                        Yes. Audit trails, approvals and version history are core features.
+                    <ul class="contact__points">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span><strong>15 minutes, not an hour.</strong> A product demo, not a slide deck.</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span><strong>Bring your own panel.</strong> We'll scope a rate-table import and tell you an honest timeline.</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg>
+                            <span><strong>Procurement questions welcome.</strong> Security, residency and the DPA get covered properly.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <form class="lead-form" id="lead-form" novalidate>
+                    <label class="form-field" for="lead-email">
+                        <span>Work email</span>
+                        <input type="email" name="email-address" id="lead-email" placeholder="you@broker.co.uk" autocomplete="email"
+                               required aria-describedby="lead-email-hint" />
+                        <span class="form-hint" id="lead-email-hint">Used only to send the demo org details.</span>
+                    </label>
+
+                    <label class="form-field" for="lead-message">
+                        <span>What are you rating today? <span class="form-hint">(optional)</span></span>
+                        <textarea name="details" id="lead-message" rows="3" placeholder="Which products do you rate, and how are you quoting now?"></textarea>
+                    </label>
+
+                    <p class="form-error" id="form-error" role="alert" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 7v6M12 16h.01" /></svg>
+                        <span id="form-error-text">Please enter a valid work email address.</span>
                     </p>
-                </details>
+
+                    <button class="btn btn--accent btn--lg" type="submit" id="lead-submit">
+                        <span>Request a walkthrough</span>
+                    </button>
+
+                    <p class="form-note" id="form-note" role="status" aria-live="polite"></p>
+
+                    <p class="form-hint">
+                        We use your email and message to set up the demo org, nothing else. They go straight to our
+                        inbox with the page you arrived from, so we can see which write-ups are converting.
+                    </p>
+                </form>
             </div>
         </section>
+    </main>
 
-        <footer>
-            © PRICR — No-code insurance rating
-        </footer>
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <a class="site-footer__brand" href="#top">
+                <img src="assets/img/logo_light.png" alt="Rateable" width="320" height="49" loading="lazy" />
+            </a>
 
-        <script>
+            <!-- Add a Privacy policy and Terms link here once those pages exist. -->
+            <ul class="site-footer__links">
+                <li><a href="#how-it-works">How it works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#security">Security</a></li>
+                <li><a href="#integration">Integrations</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
 
-            const form = document.getElementById('interestForm');
-            const error = document.getElementById('error');
-            const success = document.getElementById('success');
+            <p class="site-footer__legal">© <span id="year">2026</span> Rateable. All rights reserved.</p>
+        </div>
+    </footer>
 
-            const utmInput = document.getElementById('utmInput');
-            const referrerInput = document.getElementById('referrerInput');
-            const nameInput = document.getElementById('nameInput');
-            const emailInput = document.getElementById('emailInput');
-            const titleInput = document.getElementById('titleInput');
-            const orgInput = document.getElementById('orgInput');
-            const orgSizeInput = document.getElementById('orgSizeInput');
+    <a class="back-to-top" href="#top" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+    </a>
 
-            const submitBtn = form.querySelector('button[type="submit"]');
-
-            // Email validation
-            function isValidEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
-
-            // Populate hidden tracking fields
-            (function populateTracking() {
-                try {
-                    const params = new URLSearchParams(window.location.search);
-                    const utm = params.get('utm_source') || params.get('utm') || '';
-                    utmInput.value = utm;
-                } catch (e) {
-                    utmInput.value = '';
-                }
-                referrerInput.value = document.referrer || '';
-            })();
-
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                const email = emailInput.value;
-                const name = nameInput
-                    .value
-                    .trim();
-                const company = orgInput
-                    .value
-                    .trim();
-                const title = titleInput
-                    .value
-                    .trim();
-                const companySize = orgSizeInput.value;
-
-                if (!isValidEmail(email)) {
-                    error.style.display = 'block';
-                    return;
-                }
-
-                // Send data to the server
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Joining...';
-
-                const apiUri = 'https://script.google.com/macros/s/AKfycbzg890P1isxFpSuthVHji9rF01cKLgHxXBYoZI' +
-                        'Ang4tAyIUPWRjIevHd8nv4eDT8mCh/exec';
-
-                const formData = new FormData();
-                formData.append('email-address', email);
-                formData.append('full-name', name);
-                formData.append('company', company);
-                formData.append('job-title', title);
-                formData.append('company-size', companySize);
-                formData.append('utm_source', utmInput.value || '');
-                formData.append('referrer', referrerInput.value || '');
-                formData.append('timestamp', new Date().toISOString());
-
-                fetch(apiUri, {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            successModal
-                                .classList
-                                .add('show');
-                            createConfetti();
-                        } else {
-                            console.error('Something went wrong. Try again.');
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Network error: ' + err.message);
-                    })
-                    . finally(() => {
-                        error.style.display = 'none';
-                        form.style.display = 'none';
-                        success.style.display = 'block';
-                        launchConfetti();
-                    });
-            });
-
-            function launchConfetti() {
-                const canvas = document.getElementById('confetti');
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
-                const pieces = Array
-                    .from({length: 120})
-                    .map(() => ({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height - canvas.height,
-                        size: Math.random() * 6 + 4,
-                        speed: Math.random() * 3 + 2,
-                        color: ['#00334D', '#D62828', '#F77F00', '#FDBF45'][Math.floor(Math.random() * 4)]
-                    }));
-
-                function update() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    pieces.forEach(p => {
-                        p.y += p.speed;
-                        ctx.fillStyle = p.color;
-                        ctx.fillRect(p.x, p.y, p.size, p.size);
-                    });
-                    requestAnimationFrame(update);
-                }
-                update();
-            }
-        </script>
-
-    </body>
+    <script src="js/main.js"></script>
+</body>
 </html>
